@@ -4,7 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var SOURCE_DIR = path.resolve(__dirname, 'src');
-var BUILD_DIR = path.resolve(__dirname, 'build');
+var BUILD_DIR = path.resolve(__dirname, 'pdfconverter');
 var NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
 var JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
 var PdfConverter = 'PdfConverter';
@@ -13,7 +13,7 @@ module.exports = {
     entry: JAVASCRIPT_DIR + '/index.jsx',
     output: {
         path: BUILD_DIR,
-        filename: 'bundle.js',
+        filename: 'pdfconverter.js',
         library: PdfConverter,
         libraryTarget: 'umd',
         umdNamedDefine: true
@@ -57,45 +57,24 @@ module.exports = {
                 test: /\.jpg$/,
                 loader: "file-loader"
             },
-            {
-                test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?limit=10000&mimetype=application/font-woff'
-            },
-            {
-                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?limit=10000&mimetype=application/octet-stream'
-            },
+           
+           
             {
                 test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
                 loader: 'file'
             },
-            {
-                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'url?limit=10000&mimetype=image/svg+xml'
-            }
+           
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: SOURCE_DIR + '/index.html'
-        }),
+      
         new webpack.DefinePlugin({
             'process.env': {
                 'version': JSON.stringify(process.env.npm_package_version),
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
-        new CopyWebpackPlugin([
-            {
-                from: NODEMODULES_DIR + '/pdfjs-dist/build/pdf.worker.js',
-                to: 'bundle.worker.js'
-            },
-        ]),
-        new CopyWebpackPlugin([
-            {
-                from: SOURCE_DIR + '/favicons',
-                to: 'favicons'
-            },
-        ])
+    
+       
     ]
 }
