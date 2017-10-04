@@ -1,18 +1,28 @@
+import fetch from 'node-fetch';
+
 import AppState from '../models/AppState.jsx';
 
 export default class Converter {
 
 	constructor() {
 		this.appState = new AppState();
-		this._txt = "";
+		this.result = "";
 	}
 
 	uploadFile(url){
 
-		
-		this.appState.storeFileBuffer = fileBuffer;
+		fetch(url)
+		 .then(res => res.buffer())
+		 .then(buffer =>  {
+		 	return buffer;
+		});
+
 	}
 
+	saveBuffer(buffer){
+		this.appState.storeFileBuffer = buffer;
+	}
+	
 	convert() {
 		const loading = new Loading(appState.fileBuffer);
 
@@ -23,16 +33,11 @@ export default class Converter {
 		appState.storePdfPagesFunction = loading.getPages();
 
 		//convert pages to markdown
-		this._txt = new Result(appState.pages,appState.transformations).convertToMarkdown();
+		this.result = new Result(appState.pages,appState.transformations).convertToMarkdown();
 	}
 
 	result(){
-		return this._txt;
+		return this.result;
 	}
 
 }
- 
-
-  
-
-

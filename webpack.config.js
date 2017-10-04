@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+
 //plugins
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
@@ -6,16 +7,15 @@ const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
 
 const SOURCE_DIR = path.resolve(__dirname, 'src');
-const BUILD_DIR = path.resolve(__dirname, 'pdflibrary');
+const BUILD_DIR = path.resolve(__dirname, 'lib');
 const NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
 const JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
 
-let libraryName = 'PdfLibrary';
-let outputFile = libraryName + '.js';
+let libraryName = 'PdfConverterLibrary';
+let outputFile = "pdfconverter" + '.js';
 
 const config =  {
     entry: JAVASCRIPT_DIR + '/index.jsx',
-    devtool: 'source-map',
     output: {
         path: BUILD_DIR,
         filename: outputFile,
@@ -24,7 +24,7 @@ const config =  {
         umdNamedDefine: true
     },
     resolve: {
-        extensions: ['', '.js'],
+        extensions: ['','.js','.json'],
         fallback: [path.join(__dirname, '../node_modules')],
         alias: {
             'src': path.resolve(__dirname, '../src'),
@@ -40,7 +40,7 @@ const config =  {
         loaders: [
             {
                 // Ask webpack to check: If this file ends with .js, then apply some transforms
-                test: /\.jsx?$/,
+                test:  /\.jsx?$/,
                 // Transform it with babel
                 loader: 'babel',
                 // don't transform node_modules folder (which don't need to be compiled)
@@ -50,6 +50,10 @@ const config =  {
                     presets: ['es2015', 'stage-0', 'react'],
                 }
             },
+
+            {
+                test: /\.json$/, loader: "json"
+            }
         ]
     },
     plugins: [
@@ -59,8 +63,8 @@ const config =  {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
+        new webpack.IgnorePlugin(/\/iconv-loader$/)
     ]
 }
-
 
 module.exports = config;
