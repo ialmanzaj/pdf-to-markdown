@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "encoding": "^0.1.12",
     "enumify": "^1.0.4",
     "node-fetch": "^1.7.3",
     "pdfjs-dist": "^1.7.246",
