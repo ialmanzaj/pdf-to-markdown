@@ -34,7 +34,8 @@ export default class AppState {
     // the uploaded pdf as file buffer
     storeFileBuffer(fileBuffer:ArrayBuffer) {
         this.fileBuffer = fileBuffer;
-        this.mainView = View.LOADING;    }
+        this.mainView = View.LOADING;    
+    }
 
     storePdfPages(metadata, fontMap, pages) {
         this.metadata = metadata;
@@ -57,8 +58,6 @@ export default class AppState {
 
             new ToTextBlocks(),
             new ToMarkdown()];
-
-        
 
     }
 

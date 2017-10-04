@@ -1,20 +1,25 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+//plugins
+const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
-var SOURCE_DIR = path.resolve(__dirname, 'src');
-var BUILD_DIR = path.resolve(__dirname, 'pdfconverter');
-var NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
-var JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
-var PdfConverter = 'PdfConverter';
+const path = require('path');
+const env = require('yargs').argv.env; // use --env with webpack 2
 
-module.exports = {
+const SOURCE_DIR = path.resolve(__dirname, 'src');
+const BUILD_DIR = path.resolve(__dirname, 'pdflibrary');
+const NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
+const JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
+
+let libraryName = 'PdfLibrary';
+let outputFile = libraryName + '.js';
+
+const config =  {
     entry: JAVASCRIPT_DIR + '/index.jsx',
+    devtool: 'source-map',
     output: {
         path: BUILD_DIR,
-        filename: 'pdfconverter.js',
-        library: PdfConverter,
+        filename: outputFile,
+        library: libraryName,
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
@@ -45,36 +50,17 @@ module.exports = {
                     presets: ['es2015', 'stage-0', 'react'],
                 }
             },
-            {
-                test: /\.css$/,
-                loader: "style-loader!css-loader"
-            },
-            {
-                test: /\.png$/,
-                loader: "url-loader?limit=100000"
-            },
-            {
-                test: /\.jpg$/,
-                loader: "file-loader"
-            },
-           
-           
-            {
-                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file'
-            },
-           
         ]
     },
     plugins: [
-      
         new webpack.DefinePlugin({
             'process.env': {
                 'version': JSON.stringify(process.env.npm_package_version),
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
-    
-       
     ]
 }
+
+
+module.exports = config;
