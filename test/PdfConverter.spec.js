@@ -1,6 +1,6 @@
 /* global describe, it, before */
 
-import  { chai.expect } from 'chai';
+/*import  { chai.expect } from 'chai';
 import Converter  from '../lib/pdfconverter.js';
 
 
@@ -17,5 +17,5 @@ describe('Given an instance of my PdfConverterlibrary', () => {
   });
 });
 
-
+*/
 

@@ -26,7 +26,7 @@ const config =  {
         umdNamedDefine: true
     },
     resolve: {
-        extensions: ['','.js','.json'],
+        extensions: ['','.json','.js'],
         fallback: [path.join(__dirname, '../node_modules')],
         alias: {
             'src': path.resolve(__dirname, '../src'),
@@ -47,10 +47,7 @@ const config =  {
                 // don't transform node_modules folder (which don't need to be compiled)
                 include: [JAVASCRIPT_DIR],
                 query: {
-                    plugins: [
-                        ['transform-runtime'],
-                        ["transform-es2015-modules-umd"]
-                    ],
+                    plugins: ['transform-runtime'],
                     presets: ['es2015', 'stage-0', 'react'],
 
                 }
@@ -58,6 +55,7 @@ const config =  {
             {
                 test: /\.json$/, loader: "json"
             }
+
         ]
     },
     plugins: [

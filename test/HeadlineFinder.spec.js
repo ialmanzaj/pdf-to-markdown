@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import HeadlineFinder from '../src/javascript/models/HeadlineFinder';
 import LineItem from '../src/javascript/models/LineItem.jsx';
 
+
 describe('HeadlineFinder', () => {
 
     it('Not Found - Case 1', () => {
