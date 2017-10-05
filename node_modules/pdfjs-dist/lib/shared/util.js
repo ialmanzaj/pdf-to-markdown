@@ -627,9 +627,6 @@ var Util = function UtilClosure() {
     }
     return result;
   };
-  Util.sign = function Util_sign(num) {
-    return num < 0 ? -1 : 1;
-  };
   var ROMAN_NUMBER_MAP = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM', '', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC', '', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
   Util.toRoman = function Util_toRoman(number, lowerCase) {
     assert(Number.isInteger(number) && number > 0, 'The number should be a positive integer.');
@@ -1312,8 +1309,31 @@ MessageHandler.prototype = {
       this.comObj.postMessage(message);
     }
   },
-  destroy: function destroy() {
+  close: function close(reason) {
     this.comObj.removeEventListener('message', this._onComObjOnMessage);
+    for (var i in this.callbacksCapabilities) {
+      var callbackCapability = this.callbacksCapabilities[i];
+      callbackCapability.reject(reason);
+    }
+    for (var _i in this.streamSinks) {
+      var sink = this.streamSinks[_i];
+      sink.sinkCapability.reject(reason);
+    }
+    for (var _i2 in this.streamControllers) {
+      var controller = this.streamControllers[_i2];
+      if (!controller.isClosed) {
+        controller.controller.error(reason);
+      }
+      if (controller.startCall) {
+        controller.startCall.reject(reason);
+      }
+      if (controller.pullCall) {
+        controller.pullCall.reject(reason);
+      }
+      if (controller.cancelCall) {
+        controller.cancelCall.reject(reason);
+      }
+    }
   }
 };
 function loadJpegStream(id, imageUrl, objs) {

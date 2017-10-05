@@ -2,8 +2,6 @@ const webpack = require('webpack');
 
 //plugins
 const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-
 
 const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
@@ -47,7 +45,10 @@ const config =  {
                 // don't transform node_modules folder (which don't need to be compiled)
                 include: [JAVASCRIPT_DIR],
                 query: {
-                    plugins: ['transform-runtime'],
+                    plugins: [
+                        ['transform-runtime'],
+                        ["transform-es2015-modules-umd"]
+                    ],
                     presets: ['es2015', 'stage-0', 'react'],
 
                 }
@@ -65,12 +66,6 @@ const config =  {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
-        new CopyWebpackPlugin([
-            {
-                from: NODEMODULES_DIR + '/pdfjs-dist/build/pdf.worker.js',
-                to: 'bundle.worker.js'
-            },
-        ]),
     ]
 }
 

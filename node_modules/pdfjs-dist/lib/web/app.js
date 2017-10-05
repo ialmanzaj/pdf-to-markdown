@@ -31,8 +31,6 @@ var _pdf_rendering_queue = require('./pdf_rendering_queue');
 
 var _pdf_sidebar = require('./pdf_sidebar');
 
-var _pdf_viewer = require('./pdf_viewer');
-
 var _dom_events = require('./dom_events');
 
 var _overlay_manager = require('./overlay_manager');
@@ -56,6 +54,8 @@ var _pdf_outline_viewer = require('./pdf_outline_viewer');
 var _pdf_presentation_mode = require('./pdf_presentation_mode');
 
 var _pdf_thumbnail_viewer = require('./pdf_thumbnail_viewer');
+
+var _pdf_viewer = require('./pdf_viewer');
 
 var _secondary_toolbar = require('./secondary_toolbar');
 
@@ -947,14 +947,6 @@ var PDFViewerApplication = {
     window.addEventListener('hashchange', _boundEvents.windowHashChange);
     window.addEventListener('beforeprint', _boundEvents.windowBeforePrint);
     window.addEventListener('afterprint', _boundEvents.windowAfterPrint);
-    _boundEvents.windowChange = function (evt) {
-      var files = evt.target.files;
-      if (!files || files.length === 0) {
-        return;
-      }
-      eventBus.dispatch('fileinputchange', { fileInput: evt.target });
-    };
-    window.addEventListener('change', _boundEvents.windowChange);
   },
   unbindEvents: function unbindEvents() {
     var eventBus = this.eventBus,
@@ -1005,8 +997,6 @@ var PDFViewerApplication = {
     window.removeEventListener('hashchange', _boundEvents.windowHashChange);
     window.removeEventListener('beforeprint', _boundEvents.windowBeforePrint);
     window.removeEventListener('afterprint', _boundEvents.windowAfterPrint);
-    window.removeEventListener('change', _boundEvents.windowChange);
-    _boundEvents.windowChange = null;
     _boundEvents.windowResize = null;
     _boundEvents.windowHashChange = null;
     _boundEvents.windowBeforePrint = null;
@@ -1077,6 +1067,13 @@ function webViewerInitialized() {
   } else {
     fileInput.value = null;
   }
+  fileInput.addEventListener('change', function (evt) {
+    var files = evt.target.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+    PDFViewerApplication.eventBus.dispatch('fileinputchange', { fileInput: evt.target });
+  });
   if (PDFViewerApplication.viewerPrefs['pdfBugEnabled']) {
     var hash = document.location.hash.substring(1);
     var hashParams = (0, _ui_utils.parseQueryString)(hash);
@@ -1246,7 +1243,7 @@ function webViewerPresentationModeChanged(evt) {
   var active = evt.active,
       switchInProgress = evt.switchInProgress;
 
-  PDFViewerApplication.pdfViewer.presentationModeState = switchInProgress ? _pdf_viewer.PresentationModeState.CHANGING : active ? _pdf_viewer.PresentationModeState.FULLSCREEN : _pdf_viewer.PresentationModeState.NORMAL;
+  PDFViewerApplication.pdfViewer.presentationModeState = switchInProgress ? _ui_utils.PresentationModeState.CHANGING : active ? _ui_utils.PresentationModeState.FULLSCREEN : _ui_utils.PresentationModeState.NORMAL;
 }
 function webViewerSidebarViewChanged(evt) {
   PDFViewerApplication.pdfRenderingQueue.isThumbnailViewEnabled = PDFViewerApplication.pdfSidebar.isThumbnailViewVisible;

@@ -1,21 +1,21 @@
 /* global describe, it, before */
 
-/*import  { chai.expect } from 'chai';
+import { expect } from 'chai';
 import Converter  from '../lib/pdfconverter.js';
 
 
-let lib;
+let converter;
 
 describe('Given an instance of my PdfConverterlibrary', () => {
   before(() => {
-    lib = new PdfConverterLibrary.Converter();
+    converter = new PdfConverterLibrary.Converter();
   });
   describe('when I need the name', () => {
     it('should return the name', () => {
-     
+     converter.upload('http://res.cloudinary.com/dcq6ukcve/raw/upload/v1507138524/principles.pdf');
     });
   });
 });
 
-*/
+
 
