@@ -8,10 +8,15 @@ export class Converter {
 		this.result = "";
 	}
 
-	uploadFile(url){
+	/*uploadFile(url){
 		this.app.uploadFile(url);
 	}
-	
+	*/
+
+	uploadFile(buffer){
+		this.app.uploadFile(buffer);
+	}
+
 	convert() {
 		this.result = this.app.convert();
 	}
