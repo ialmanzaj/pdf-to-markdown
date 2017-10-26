@@ -30,13 +30,30 @@ export default class App {
         console.log("uploadFile");
         const appState = this.appState;
 
-        const parser = new Parser(buffer);
-        parser.parse().then(function(result) {
-           
-            console.log("page: " + result.pages);
-            console.log("fontMap: " + result.fontMap);
+        const resultConvert = new Result();
 
+        const parser = new Parser(buffer);
+        parser.parsePages().then(function(result) {
+           
+            //console.log("document: " + result.document);
+            console.log(result.pages);
+            //console.log("fontMap: " + result.fontMap);
+
+            return Promise.all([result, parser.metadataParsed(result.document)])
+
+        }).then(function(results){
+
+            let pages = results[0].pages;
+            let fontMap = results[0].fontMap;
+            console.log(fontMap)
+            let metadata = results[1];
+
+
+            appState.storePdfPages(metadata, fontMap, pages);
+            var text = resultConvert.convertToMarkdown(appState.pages, appState.transformations);
+            console.log("text: "+text);
         });
+
     }
 
     convert() {

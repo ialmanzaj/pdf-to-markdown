@@ -23,7 +23,7 @@ export default class AppState {
         this.fileBuffer;
         this.metadata;
         this.pages = [];
-        this.transformations ;
+        this.transformations;
 
         //bind functions
         this.storeFileBuffer = this.storeFileBuffer.bind(this);

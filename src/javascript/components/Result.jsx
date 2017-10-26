@@ -5,14 +5,10 @@ import ParseResult from '../models/ParseResult.jsx';
 
 export default class Result {
 
-    constructor(pages, transformations) {
-        this.pages = pages;
-        this.transformations = transformations;
+    constructor() {
     }
 
-    convertToMarkdown() {
-        var pages = this.pages;
-        var transformations = this.transformations;
+    convertToMarkdown(pages, transformations) {
 
         var parseResult = new ParseResult({
             pages: pages
