@@ -1,14 +1,11 @@
-import Remarkable from 'remarkable';
-
 import ParseResult from '../models/ParseResult.jsx';
-
 
 export default class Result {
 
-    constructor() {
-    }
+    constructor() {}
 
     convertToMarkdown(pages, transformations) {
+        //console.log(transformations);
 
         var parseResult = new ParseResult({
             pages: pages
@@ -32,7 +29,4 @@ export default class Result {
 
         return text
     }
-  
 }
-
-

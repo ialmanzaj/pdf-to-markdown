@@ -1,17 +1,11 @@
-import Remarkable from 'remarkable';
-
 import pdfjs from 'pdfjs-dist'; // eslint-disable-line no-unused-vars
-import { Line } from 'rc-progress';
 
-import Metadata from '../models/Metadata.jsx';
 import Page from '../models/Page.jsx';
 import TextItem from '../models/TextItem.jsx';
 
 class Parser {
 
-    constructor(fileBuffer) {
-        this.fileBuffer = fileBuffer;
-
+    constructor() {
         const progress = new Progress({
             stages: [
                 new ProgressStage('Parsing Metadata', 2),
@@ -38,6 +32,7 @@ class Parser {
         this.document = null;
         this.metadata = null;
         this.pages = [];
+        this.fonts = new Set();
         this.fontIds = new Set();
         this.fontMap = new Map();
     }
@@ -53,12 +48,9 @@ class Parser {
 
         //console.log("pageStage stepsDone: " + pageStage.stepsDone)
 
-
         var pages = [];
         for (var i = 0; i < numPages; i++) {
-            pages.push(new Page({
-                index: i
-            }));
+            pages.push(new Page({ index: i }));
         }
 
         this.pages = pages;
@@ -69,18 +61,18 @@ class Parser {
         const pageStage = this.progress.pageStage();
 
         pageStage.stepsDone = pageStage.stepsDone + 1;
-        this.pages[index].items = textItems; // eslint-disable-line react/no-direct-mutation-state
-
-        //console.log("pageStage stepsDone: " + pageStage.stepsDone);
+        this.pages[index].items = textItems;
     }
 
     fontParsed(fontId, font) {
+
         const fontStage = this.progress.fontStage();
 
         this.fontMap.set(fontId, font); // eslint-disable-line react/no-direct-mutation-state
-        console.log(this.fontMap);
         fontStage.stepsDone++;
-        //console.log("fontStage stepsDone: " + fontStage.stepsDone);
+
+        //console.log("fontParsed ------------> " + this.fontMap.size);
+        //console.log(this.fontMap);
     }
 
     metadataParsed(pdfDocument) {
@@ -93,97 +85,75 @@ class Parser {
         });
     }
 
-    parseFonts(textContent, viewport) {
-        console.log("parseFonts ");
-        const self = this;
-        return new Promise(function(resolve, reject) {
-
-            const textItems = textContent.items.map(function(item) {
-                console.log("resolving of fonts");
-
-                //trigger resolving of fonts
-                const fontId = item.fontName;
-
-                if (!self.fontIds.has(fontId) && fontId.startsWith('g_d0')) {
-                    self.document.transport.commonObjs.get(fontId, function(font) {
-                        self.fontParsed(fontId, font);
-                    });
-                    self.fontIds.add(fontId);
-                }
-
-                const tx = PDFJS.Util.transform( // eslint-disable-line no-undef
-                    viewport.transform,
-                    item.transform
-                );
-
-                const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
-                const dividedHeight = item.height / fontHeight;
-                return new TextItem({
-                    x: Math.round(item.transform[4]),
-                    y: Math.round(item.transform[5]),
-                    width: Math.round(item.width),
-                    height: Math.round(dividedHeight <= 1 ? item.height : dividedHeight),
-                    text: item.str,
-                    font: item.fontName
-                });
-
-            });
-
-            console.log("resolve textItems");
-            resolve(textItems);
-            //promise 
-        });
-    }
-
     getPage(pdfDocument, iterador) {
-        //console.log("iterador "+iterador);
-        const self = this;
         return new Promise(function(resolve, reject) {  
-
-
-            return new Promise(function(resolve, reject) {  
-                pdfDocument.getPage(iterador).then(function(page) {
-                    // console.debug(page);
-                    const scale = 1.0;
-                    const viewport = page.getViewport(scale);
-
-                    resolve({
-                        page: page,
-                        viewport: viewport
-                    });
-                });
-            );
-            
-
-
-            
-              
-            const page = result.page;
-            const viewport = result.viewport;
+            pdfDocument.getPage(iterador).then(function(page) {
+                // console.debug(page);
+                const scale = 1.0;
+                const viewport = page.getViewport(scale);
 
                 page.getTextContent().then(function(textContent) {
 
-                    self.parseFonts(textContent, viewport).then(function(textItems) {
-
-                        return textItems;
+                    resolve({
+                        page: page,
+                        viewport: viewport,
+                        textContent: textContent
                     });
 
                 });
 
+            });
+        });
+    }
 
 
-                .then(function(textItems) {
+    getPageParsed(pdfDocument, iterador) {
+        //console.log("iterador "+iterador);
+        const self = this;
 
+        return new Promise(function(resolve, reject) {  
 
-                    //set pages
-                    self.pages[page.pageIndex] = textItems;
+            self.getPage(pdfDocument, iterador).then(function(result) {
 
-                    //console.log("page.pageIndex " + page.pageIndex);
+                const viewport = result.viewport;
+                const page = result.page;
+                const textContent = result.textContent;
+                const pageIndex = result.page.pageIndex;
 
-                    resolve(self.pages[page.pageIndex]);
+                const textItems = textContent.items.map(function(item) {
+
+                    //trigger resolving of fonts
+                    const fontId = item.fontName;
+
+                    if (!self.fontIds.has(fontId) && fontId.startsWith('g_d0')) {
+                        self.fontIds.add(fontId);
+                    }
+
+                    const tx = PDFJS.Util.transform(
+                        viewport.transform,
+                        item.transform
+                    );
+
+                    const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
+                    const dividedHeight = item.height / fontHeight;
+                    return new TextItem({
+                        x: Math.round(item.transform[4]),
+                        y: Math.round(item.transform[5]),
+                        width: Math.round(item.width),
+                        height: Math.round(dividedHeight <= 1 ? item.height : dividedHeight),
+                        text: item.str,
+                        font: item.fontName
+                    });
                 });
 
+                page.getOperatorList().then(function() {
+                    // do nothing... this is only for triggering the font retrieval
+                });
+
+                self.pages[pageIndex].items = textItems;
+                resolve(self.pages[pageIndex]);
             });
+
 
         });
 
@@ -195,36 +165,71 @@ class Parser {
         let promises = [];
         //operations
         for (var j = 1; j <= pdfDocument.numPages; j++) {
-            promises.push(self.getPage(pdfDocument, j));
+            promises.push(self.getPageParsed(pdfDocument, j));
         }
         return promises;
     }
 
-    parsePages() {
+
+    parseFontMaps(fontIds) {
+        const self = this;
+        let promises = [];
+
+        fontIds.forEach((fontId) => {
+            promises.push(self.parseFont(fontId));
+        });
+
+        return promises;
+    }
+
+    getFontMap() {
+        const self = this;
+        //console.log(self.fontIds);
+        return Promise.all(self.parseFontMaps(self.fontIds)).then(fonts => {
+            return fonts;
+        });
+    }
+
+    parseFont(fontId) {
         const self = this;
 
         return new Promise(function(resolve, reject) {  
+            self.document.transport.commonObjs.get(fontId, function(font) {
 
-            PDFJS.getDocument(self.fileBuffer).then(function(pdfDocument) {
+                self.fontParsed(fontId, font);
 
-                self.documentParsed(pdfDocument);
-
-                return Promise.all(self.pagesParsed(pdfDocument, self.pages));
-
-            }).then(function(pages) {
-
-                console.log(self.fontMap);
                 resolve({
-                    document: self.document,
-                    pages: pages,
-                    fontMap: self.fontMap
+                    fontId: fontId,
+                    font: font
                 });
-
             });
+
         });
 
     }
 
+
+    parseDocumentUrl(url) {
+        const self = this;
+        var loadingTask = PDFJS.getDocument(url);
+        return loadingTask.promise.then(function(pdfDocument) {
+            self.documentParsed(pdfDocument);
+            return pdfDocument;
+        });
+    }
+
+    parseDocumentBuffer(fileBuffer) {
+        const self = this;
+        return PDFJS.getDocument(fileBuffer).then(function(pdfDocument) {
+            self.documentParsed(pdfDocument);
+            return pdfDocument;
+        });
+    }
+
+    parsePages(pdfDocument) {
+        const self = this;
+        return Promise.all(self.pagesParsed(pdfDocument, self.pages));
+    }
 
 }
 

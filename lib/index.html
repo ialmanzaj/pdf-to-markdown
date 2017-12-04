@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>test</title>
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <input type="file" onchange="previewFile()" />
+    <output id="list"></output>
+    <script src="pdfconverter.js"></script>
+    <script>
+    var pdfconverter = new PdfConverterLibrary.Converter();
+
+    var url = 'http://res.cloudinary.com/dcq6ukcve/raw/upload/v1507138524/principles.pdf';
+
+    pdfconverter.convertToMarkdownUrl(url).then(function(content) {
+        console.log(content);
+    });
+
+
+    /*function previewFile() {
+      var preview = document.querySelector('img');
+      var file    = document.querySelector('input[type=file]').files[0];
+      var reader  = new FileReader();
+
+      reader.addEventListener("load", function () {
+        pdfconverter.convertToMarkdownBuffer(reader.result).then(function(text){
+        	console.log(text);
+        });
+        
+      }, false);
+
+      if (file) {
+      	reader.readAsArrayBuffer(file);
+      
+      }
+    }*/
+    </script>
+</body>
+
+</html>

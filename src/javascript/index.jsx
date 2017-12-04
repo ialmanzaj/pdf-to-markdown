@@ -5,24 +5,14 @@ export class Converter {
 
    constructor() {
 		this.app = new App(new AppState());
-		this.result = "";
 	}
 
-	/*uploadFile(url){
-		this.app.uploadFile(url);
-	}
-	*/
-
-	uploadFile(buffer){
-		this.app.uploadFile(buffer);
+	convertToMarkdownBuffer(buffer){
+		return this.app.convertToMarkdownBuffer(buffer);
 	}
 
-	convert() {
-		this.result = this.app.convert();
-	}
-
-	result(){
-		return this.result;
+	convertToMarkdownUrl(url){
+		return this.app.convertToMarkdownUrl(url);
 	}
 
 }

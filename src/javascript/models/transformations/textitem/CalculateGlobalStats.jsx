@@ -10,12 +10,15 @@ export default class CalculateGlobalStats extends ToTextItemTransformation {
     }
 
     transform(parseResult:ParseResult) {
+        //console.log("transform");
+
         // Parse heights
         const heightToOccurrence = {};
         const fontToOccurrence = {};
         var maxHeight = 0;
         var maxHeightFont;
         parseResult.pages.forEach(page => {
+            //console.log(page);
             page.items.forEach(item => {
                 heightToOccurrence[item.height] = heightToOccurrence[item.height] ? heightToOccurrence[item.height] + 1 : 1;
                 fontToOccurrence[item.font] = fontToOccurrence[item.font] ? fontToOccurrence[item.font] + 1 : 1;

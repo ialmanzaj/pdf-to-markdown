@@ -38,6 +38,8 @@ export default class AppState {
     }
 
     storePdfPages(metadata, fontMap, pages) {
+        //console.log("storePdfPages");
+        
         this.metadata = metadata;
         this.pages = pages;
         this.fileBuffer = null;

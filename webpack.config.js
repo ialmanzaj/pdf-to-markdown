@@ -50,13 +50,11 @@ const config =  {
                         ["transform-es2015-modules-umd"]
                     ],
                     presets: ['es2015', 'stage-0', 'react'],
-
                 }
             },
             {
                 test: /\.json$/, loader: "json"
             }
-
         ]
     },
     plugins: [
@@ -66,6 +64,9 @@ const config =  {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
+        new UglifyJsPlugin({
+          compress: { warnings: false }
+        })
     ]
 }
 
