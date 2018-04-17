@@ -11,7 +11,7 @@ const BUILD_DIR = path.resolve(__dirname, 'lib');
 const NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
 const JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
 
-let libraryName = 'PdfConverterLibrary';
+let libraryName = 'pdfConverterLibrary';
 let outputFile = "pdfconverter" + '.js';
 
 const config =  {
@@ -65,7 +65,10 @@ const config =  {
             }
         }),
         new UglifyJsPlugin({
-          compress: { warnings: false }
+          compress: { warnings: false },
+          output: {
+              comments: false
+          }
         })
     ]
 }

@@ -13,11 +13,10 @@
     <output id="list"></output>
     <script src="pdfconverter.js"></script>
     <script>
-    var pdfconverter = new PdfConverterLibrary.Converter();
 
     var url = 'http://res.cloudinary.com/dcq6ukcve/raw/upload/v1507138524/principles.pdf';
 
-    pdfconverter.convertToMarkdownUrl(url).then(function(content) {
+    pdfConverterLibrary.convertToMarkdownUrl(url).then(function(content) {
         console.log(content);
     });
 
@@ -31,12 +30,12 @@
         pdfconverter.convertToMarkdownBuffer(reader.result).then(function(text){
         	console.log(text);
         });
-        
+
       }, false);
 
       if (file) {
       	reader.readAsArrayBuffer(file);
-      
+
       }
     }*/
     </script>

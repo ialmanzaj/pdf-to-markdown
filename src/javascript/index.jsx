@@ -1,18 +1,12 @@
 import App from './components/App.jsx';
 import AppState from './models/AppState.jsx';
 
-export class Converter {
+export function convertToMarkdownBuffer(buffer) {
+	this.app = new App(new AppState());
+	this.app.convertToMarkdownBuffer(buffer);
+} 
 
-   constructor() {
-		this.app = new App(new AppState());
-	}
-
-	convertToMarkdownBuffer(buffer){
-		return this.app.convertToMarkdownBuffer(buffer);
-	}
-
-	convertToMarkdownUrl(url){
-		return this.app.convertToMarkdownUrl(url);
-	}
-
+export function convertToMarkdownUrl(url){
+	this.app = new App(new AppState());
+	return this.app.convertToMarkdownUrl(url);
 }

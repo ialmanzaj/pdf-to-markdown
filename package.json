@@ -17,11 +17,8 @@
   "dependencies": {
     "encoding": "^0.1.12",
     "enumify": "^1.0.4",
-    "node-fetch": "^2.0.0-alpha.9",
     "pdfjs-dist": "^1.7.246",
     "react": "^15.4.2",
-    "react-bootstrap": "^0.30.7",
-    "rc-progress": "^2.0.6",
     "remarkable": "^1.7.1"
   },
   "devDependencies": {
