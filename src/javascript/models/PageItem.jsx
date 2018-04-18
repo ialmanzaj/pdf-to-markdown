@@ -1,6 +1,5 @@
 // A abstract PageItem class, can be TextItem, LineItem or LineItemBlock
 export default class PageItem {
-
     constructor(options) {
         if (this.constructor === PageItem) {
             throw new TypeError("Can not construct abstract class.");
@@ -9,11 +8,9 @@ export default class PageItem {
         this.annotation = options.annotation;
         this.parsedElements = options.parsedElements;
     }
-
 }
 
 export class ParsedElements {
-
     constructor(options) {
         this.footnoteLinks = options.footnoteLinks || [];
         this.footnotes = options.footnotes || [];

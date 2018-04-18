@@ -8,7 +8,7 @@ import { ParsedElements } from './PageItem.jsx';
 import { isNumber, isListItemCharacter } from '../stringFunctions.jsx'
 import { sortByX } from '../pageItemFunctions.jsx'
 
-// Converts text items which have been grouped to a line (through TextItemLineGrouper) to a single LineItem doing inline transformations like 
+// Converts text items which have been grouped to a line (through TextItemLineGrouper) to a single LineItem doing inline transformations like
 //'whitespace removal', bold/emphasis annotation, link-detection, etc..
 export default class LineConverter {
 
@@ -16,7 +16,7 @@ export default class LineConverter {
         this.fontToFormats = fontToFormats;
     }
 
-    // returns a CombineResult 
+    // returns a CombineResult
     compact(textItems: TextItem[]) {
         // we can't trust order of occurence, esp. footnoteLinks like to come last
         sortByX(textItems);
@@ -40,8 +40,6 @@ export default class LineConverter {
             width: widthSum,
             words: words,
             parsedElements: new ParsedElements({
-                footnoteLinks: wordStream.footnoteLinks,
-                footnotes: wordStream.footnotes,
                 containLinks: wordStream.containLinks,
                 formattedWords: wordStream.formattedWords
             })
@@ -56,8 +54,6 @@ class WordDetectionStream extends StashingStream {
     constructor(fontToFormats) {
         super();
         this.fontToFormats = fontToFormats;
-        this.footnoteLinks = [];
-        this.footnotes = [];
         this.formattedWords = 0
         this.containLinks = false;
 
@@ -96,13 +92,13 @@ class WordDetectionStream extends StashingStream {
                     string: `${joinedNumber}`,
                     type: WordType.FOOTNOTE_LINK
                 }));
-                this.footnoteLinks.push(parseInt(joinedNumber));
+
             } else if (this.currentItem && this.currentItem.y < stash[0].y) { // footnote
                 results.push(new Word({
                     string: `${joinedNumber}`,
                     type: WordType.FOOTNOTE
                 }));
-                this.footnotes.push(joinedNumber);
+
             } else {
                 this.copyStashItemsAsText(stash, results);
             }

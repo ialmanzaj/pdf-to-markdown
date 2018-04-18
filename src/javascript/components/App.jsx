@@ -29,7 +29,6 @@ export default class App {
 
         const parser = new Parser();
 
-
         return parser.parseDocumentUrl(url)
             .then(function(pdfDocument) {
                 return Promise.all([
