@@ -46,9 +46,7 @@ class Parser {
         pageStage.steps = numPages;
         pageStage.stepsDone;
 
-        //console.log("pageStage stepsDone: " + pageStage.stepsDone)
-
-        var pages = [];
+        let pages = [];
         for (var i = 0; i < numPages; i++) {
             pages.push(new Page({ index: i }));
         }
@@ -65,9 +63,7 @@ class Parser {
     }
 
     fontParsed(fontId, font) {
-
         const fontStage = this.progress.fontStage();
-
         this.fontMap.set(fontId, font); // eslint-disable-line react/no-direct-mutation-state
         fontStage.stepsDone++;
 
@@ -76,9 +72,9 @@ class Parser {
     }
 
     metadataParsed(pdfDocument) {
-        return new Promise(function(resolve, reject) {  
+        return new Promise((resolve, reject) => {  
             //operation
-            pdfDocument.getMetadata().then(function(metadata) {
+            pdfDocument.getMetadata().then((metadata) => {
                 //return metadata
                 resolve(metadata);
             });
@@ -86,20 +82,18 @@ class Parser {
     }
 
     getPage(pdfDocument, iterador) {
-        return new Promise(function(resolve, reject) {  
-            pdfDocument.getPage(iterador).then(function(page) {
+        return new Promise((resolve, reject) => {  
+            pdfDocument.getPage(iterador).then(page => {
                 // console.debug(page);
                 const scale = 1.0;
                 const viewport = page.getViewport(scale);
 
-                page.getTextContent().then(function(textContent) {
-
+                page.getTextContent().then((textContent) => {
                     resolve({
                         page: page,
                         viewport: viewport,
                         textContent: textContent
                     });
-
                 });
 
             });
@@ -111,17 +105,15 @@ class Parser {
         //console.log("iterador "+iterador);
         const self = this;
 
-        return new Promise(function(resolve, reject) {  
-
-            self.getPage(pdfDocument, iterador).then(function(result) {
+        return new Promise((resolve, reject) => {  
+            self.getPage(pdfDocument, iterador).then(result => {
 
                 const viewport = result.viewport;
                 const page = result.page;
                 const textContent = result.textContent;
                 const pageIndex = result.page.pageIndex;
 
-                const textItems = textContent.items.map(function(item) {
-
+                const textItems = textContent.items.map(item => {
                     //trigger resolving of fonts
                     const fontId = item.fontName;
 
@@ -129,10 +121,7 @@ class Parser {
                         self.fontIds.add(fontId);
                     }
 
-                    const tx = PDFJS.Util.transform(
-                        viewport.transform,
-                        item.transform
-                    );
+                    const tx = PDFJS.Util.transform(viewport.transform,item.transform);
 
                     const fontHeight = Math.sqrt((tx[2] * tx[2]) + (tx[3] * tx[3]));
                     const dividedHeight = item.height / fontHeight;
@@ -146,7 +135,7 @@ class Parser {
                     });
                 });
 
-                page.getOperatorList().then(function() {
+                page.getOperatorList().then(() => {
                     // do nothing... this is only for triggering the font retrieval
                 });
 
@@ -154,11 +143,8 @@ class Parser {
                 resolve(self.pages[pageIndex]);
             });
 
-
         });
-
     }
-
 
     pagesParsed(pdfDocument) {
         const self = this;
@@ -169,7 +155,6 @@ class Parser {
         }
         return promises;
     }
-
 
     parseFontMaps(fontIds) {
         const self = this;
@@ -194,10 +179,8 @@ class Parser {
         const self = this;
 
         return new Promise(function(resolve, reject) {  
-            self.document.transport.commonObjs.get(fontId, function(font) {
-
+            self.document.transport.commonObjs.get((fontId, font) => {
                 self.fontParsed(fontId, font);
-
                 resolve({
                     fontId: fontId,
                     font: font
@@ -208,10 +191,9 @@ class Parser {
 
     }
 
-
     parseDocumentUrl(url) {
         const self = this;
-        var loadingTask = PDFJS.getDocument(url);
+        const loadingTask = PDFJS.getDocument(url);
         return loadingTask.promise.then(function(pdfDocument) {
             self.documentParsed(pdfDocument);
             return pdfDocument;
@@ -220,7 +202,7 @@ class Parser {
 
     parseDocumentBuffer(fileBuffer) {
         const self = this;
-        return PDFJS.getDocument(fileBuffer).then(function(pdfDocument) {
+        return PDFJS.getDocument(fileBuffer).then((pdfDocument) => {
             self.documentParsed(pdfDocument);
             return pdfDocument;
         });

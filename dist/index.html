@@ -9,15 +9,14 @@
 </head>
 
 <body>
-    <input type="file" onchange="previewFile()" />
+    <input type="text" placeholder="Search..">
     <output id="list"></output>
     <script src="pdfconverter.js"></script>
     <script>
-
     var url = 'http://res.cloudinary.com/dcq6ukcve/raw/upload/v1507138524/principles.pdf';
 
     pdfConverterLibrary.convertToMarkdownUrl(url).then(function(content) {
-        console.log(content);
+      console.log(content)
     });
 
 

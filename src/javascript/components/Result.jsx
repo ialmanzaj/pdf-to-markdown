@@ -7,9 +7,7 @@ export default class Result {
     convertToMarkdown(pages, transformations) {
         //console.log(transformations);
 
-        var parseResult = new ParseResult({
-            pages: pages
-        });
+        let parseResult = new ParseResult({ pages: pages });
 
         var lastTransformation;
         transformations.forEach(transformation => {
@@ -20,7 +18,7 @@ export default class Result {
             lastTransformation = transformation;
         });
 
-        var text = '';
+        let text = '';
         parseResult.pages.forEach(page => {
             page.items.forEach(item => {
                 text += item + '\n';

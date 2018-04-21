@@ -7,7 +7,7 @@ const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
 
 const SOURCE_DIR = path.resolve(__dirname, 'src');
-const BUILD_DIR = path.resolve(__dirname, 'lib');
+const BUILD_DIR = path.resolve(__dirname, 'dist');
 const NODEMODULES_DIR = path.resolve(__dirname, 'node_modules');
 const JAVASCRIPT_DIR = SOURCE_DIR + '/javascript';
 
@@ -21,10 +21,11 @@ const config =  {
         filename: outputFile,
         library: libraryName,
         libraryTarget: 'umd',
+        chunkFilename: 'pdf.worker.js',
         umdNamedDefine: true
     },
     resolve: {
-        extensions: ['','.json','.js'],
+        extensions: ['','.js','.jsx'],
         fallback: [path.join(__dirname, '../node_modules')],
         alias: {
             'src': path.resolve(__dirname, '../src'),
@@ -64,12 +65,13 @@ const config =  {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
             }
         }),
-        new UglifyJsPlugin({
-          compress: { warnings: false },
-          output: {
-              comments: false
-          }
-        })
+        //new webpack.IgnorePlugin(/jsdom$/)
+        // new UglifyJsPlugin({
+        //   compress: { warnings: false },
+        //   output: {
+        //       comments: false
+        //   }
+        // })
     ]
 }
 

@@ -1,0 +1,14 @@
+{
+  "name": "pdf-converter",
+  "version": "1.0.0",
+  "description": "converter pdf to markdown",
+  "main": "pdfconverter.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "pdf"
+  ],
+  "author": "Isaac Almanza <isaac.almanza19@gmail.com> (http://ialmanza.com)",
+  "license": "ISC"
+}

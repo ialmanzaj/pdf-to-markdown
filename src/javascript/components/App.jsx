@@ -2,26 +2,9 @@ import Parser from './Parser.jsx';
 import Result from './Result.jsx'
 
 export default class App {
-
     constructor(appState) {
         this.appState = appState;
     }
-
-    /*uploadFile(url){
-
-
-         fetch(url)
-             .then(res => res.text())
-             .then(body => console.log(body));
-
-         fetch(url)
-             .then(res => res.buffer())
-             .then(buffer => fileType(buffer)).then(type => {
-
-                console.log( fileType(buffer) );
-
-            });
-    }*/
 
     convertToMarkdownUrl(url) {
         const appState = this.appState;
@@ -36,14 +19,14 @@ export default class App {
                     parser.parsePages(pdfDocument)
                 ]);
             })
-            .then(function(array) {
+            .then((array) => {
                 return Promise.all([
                     array[0],
                     array[1],
                     parser.getFontMap()
                 ]);
             })
-            .then(function(array) {
+            .then((array) => {
                 return Promise.all([
                     array[1],
                     array[2],
@@ -51,7 +34,7 @@ export default class App {
                 ]);
 
             })
-            .then(function(array) {
+            .then((array)  => {
                 const pages = array[0];
                 const metadata = array[2];
                 var fontMap = new Map();
@@ -80,7 +63,6 @@ export default class App {
 
         const parser = new Parser();
 
-
         return parser.parseDocumentBuffer(buffer)
             .then(function(pdfDocument) {
                 return Promise.all([
@@ -88,14 +70,14 @@ export default class App {
                     parser.parsePages(pdfDocument)
                 ]);
             })
-            .then(function(array) {
+            .then((array) => {
                 return Promise.all([
                     array[0],
                     array[1],
                     parser.getFontMap()
                 ]);
             })
-            .then(function(array) {
+            .then((array) => {
                 return Promise.all([
                     array[1],
                     array[2],
@@ -103,7 +85,7 @@ export default class App {
                 ]);
 
             })
-            .then(function(array) {
+            .then((array) => {
                 const pages = array[0];
                 const metadata = array[2];
                 var fontMap = new Map();
@@ -112,14 +94,9 @@ export default class App {
                     fontMap.set(font.fontId, font.font);
                 });
 
-                //console.log(pages);
-                //console.log(fontMap);
-                //console.log(metadata);
-
                 appState.storePdfPages(metadata, fontMap, pages);
-                var text = resultConvert.convertToMarkdown(
-                    appState.pages, appState.transformations
-                );
+
+                const text = resultConvert.convertToMarkdown(appState.pages, appState.transformations);
 
                 return text;
             });
